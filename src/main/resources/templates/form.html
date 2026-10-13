@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('글쓰기')}"></head>
+<body>
+<header class="hero">
+    <h1><a href="/">✨ 게시판</a></h1>
+    <p th:text="${postId == null} ? '새 글 작성' : '글 수정'">새 글 작성</p>
+</header>
+<main class="container">
+    <form class="card" method="post"
+          th:action="${postId == null} ? @{/posts} : @{/posts/{id}(id=${postId})}" th:object="${post}">
+        <label for="title">제목</label>
+        <input type="text" id="title" th:field="*{title}" placeholder="제목을 입력하세요" maxlength="100">
+        <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+
+        <label for="name">이름</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="이름을 입력하세요" maxlength="30">
+        <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+        <label for="content">내용</label>
+        <textarea id="content" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
+        <div class="error" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+
+        <div class="actions">
+            <a class="btn ghost" th:href="${postId == null} ? @{/} : @{/posts/{id}(id=${postId})}">취소</a>
+            <button class="btn" type="submit" th:text="${postId == null} ? '등록' : '수정'">등록</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

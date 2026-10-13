@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('게시판')}"></head>
+<body>
+<header class="hero">
+    <h1><a href="/">✨ 게시판</a></h1>
+    <p>자유롭게 글을 남겨보세요</p>
+</header>
+<main class="container">
+    <section class="card">
+        <div class="toolbar">
+            <span class="count">전체 <b th:text="${posts.totalElements}">0</b>개의 글</span>
+            <a class="btn" th:href="@{/posts/new}">✏️ 글쓰기</a>
+        </div>
+        <table>
+            <thead>
+            <tr><th>No</th><th>제목</th><th>이름</th><th class="date">날짜</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="p, st : ${posts.content}">
+                <td class="no" th:text="${posts.totalElements - (posts.number * posts.size) - st.index}">1</td>
+                <td><a th:href="@{/posts/{id}(id=${p.id}, page=${posts.number})}" th:text="${p.title}">제목</a></td>
+                <td class="name" th:text="${p.name}">이름</td>
+                <td class="date" th:text="${#temporals.format(p.createdAt, 'yyyy-MM-dd')}">2025-01-01</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="empty" th:if="${posts.empty}">아직 작성된 글이 없습니다. 첫 글을 남겨보세요! 🌱</div>
+
+        <nav class="pagination" th:if="${posts.totalPages > 1}">
+            <a th:if="${posts.hasPrevious()}" th:href="@{/(page=${posts.number - 1})}">‹</a>
+            <span class="disabled" th:unless="${posts.hasPrevious()}">‹</span>
+            <th:block th:each="i : ${#numbers.sequence(0, posts.totalPages - 1)}">
+                <span class="active" th:if="${i == posts.number}" th:text="${i + 1}">1</span>
+                <a th:unless="${i == posts.number}" th:href="@{/(page=${i})}" th:text="${i + 1}">2</a>
+            </th:block>
+            <a th:if="${posts.hasNext()}" th:href="@{/(page=${posts.number + 1})}">›</a>
+            <span class="disabled" th:unless="${posts.hasNext()}">›</span>
+        </nav>
+    </section>
+</main>
+</body>
+</html>
